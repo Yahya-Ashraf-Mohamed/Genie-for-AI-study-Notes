@@ -98,4 +98,3 @@ This project is licensed under the [MIT License](LICENSE).
 For questions or suggestions, please open an [issue](https://github.com/Yahya-Ashraf-Mohamed/Genie-for-AI-study-Notes/issues) or contact us at `eng.yahya.mohamed@gmail.com`.
 
 Happy Learning!
-# Genie-for-AI-study-Notes

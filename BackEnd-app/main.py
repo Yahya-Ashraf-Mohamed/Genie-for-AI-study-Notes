@@ -31,7 +31,19 @@ async def view_study_materials(material:StudyMaterial):
         print("no study material")
 
 
-
+@app.get("/search/", tags=["Study Materials"])
+async def search_study_material(title: str):
+    try:
+       
+        results = study_material_collection.find({"title": {"$regex": title, "$options": "i"}})
+        materials = [StudyMaterial(**result) for result in results]
+        if not materials:
+            raise HTTPException(status_code=404, detail="No study materials found with that title.")
+        
+        return {"status_code": 200, "found_materials": materials}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching for study materials: {e}")
 
 
 # @router.get("/items/{item_id}")

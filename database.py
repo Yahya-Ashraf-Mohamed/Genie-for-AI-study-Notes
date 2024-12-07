@@ -4,7 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Database URL (replace with your own PostgreSQL connection string)
-DATABASE_URL = "postgresql://username:password@localhost/ai_study_assistant"
+DATABASE_URL = "postgresql://assistant_user:newpassword@localhost/ai_study_assistant"
+
 
 # Create engine and session
 engine = create_engine(DATABASE_URL)

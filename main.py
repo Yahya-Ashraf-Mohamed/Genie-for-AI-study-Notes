@@ -17,6 +17,7 @@ def get_db():
 
 # Route to create study material and store its vector data in Pinecone
 ############# still under development ############
+"""""
 @app.post("/study_material/")
 def create_study_material(title: str, content_type: str, db: Session = Depends(get_db)):
     # Insert study material into PostgreSQL
@@ -41,7 +42,7 @@ def create_study_material(title: str, content_type: str, db: Session = Depends(g
 
     return {"message": f"Study material '{material.title}' added successfully!"}
 
-
+"""""
 
 # create a study material
 @app.post("/create/")

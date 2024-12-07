@@ -111,12 +111,23 @@ async def add_study_material(material: StudyMaterial):
     
 
 @router.get("/study_materials/", tags=["Study Materials"])
-async def view_study_materials(material:StudyMaterial):
+async def view_study_materials():
     try:
         data = study_material_collection.find()
         return all_materials(data)
     except Exception as e :
         print("no study material")
+
+@router.get("/study_material/{material_id}", tags=["Study Materials"])
+async def view_study_material():
+    try:
+        material = study_material_collection.find_one({"_id": ObjectId(material_id)})
+        if material:
+            return mongo_to_dict(material)
+        else:
+            raise HTTPException(status_code=404, detail="material not found")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/search_study_materials/", tags=["Study Materials"])

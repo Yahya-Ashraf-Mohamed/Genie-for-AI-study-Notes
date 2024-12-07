@@ -1,0 +1,135 @@
+/* src/styles/Sidebar.css */
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.sidebar {
+  width: 20%;
+  background-color: white;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+  position: fixed; /* Fix it to the left side */
+  top: 0;
+  bottom: 0;
+  overflow-y: auto; /* Enable scrolling for sidebar */
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+
+
+.sidebar-header .hamburger-menu {
+  display: none;
+}
+
+.sidebar-links {
+  margin-top: 20px;
+}
+
+.sidebar-links a {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar-links a:hover {
+  color: #007bff;
+}
+
+/* Styling for the toggle icon */
+.toggle-icon {
+  width: 16px; /* Adjust size */
+  height: 16px;
+  margin-left: 8px;  /* Spacing between the text and icon */
+  transition: transform 0.2s ease-in-out; /* Smooth transition for rotation */
+}
+
+/* Additional Sidebar Styles (e.g., for expandable sections) */
+.expandable-section {
+  margin-top: 10px;
+}
+
+.expandable-header {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.expandable-links a {
+  padding-left: 20px;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+}
+
+.expandable-links a:hover {
+  color: #007bff;
+}
+
+.divider {
+  @apply w-full h-px bg-gray-300 my-4;
+}
+
+.footer {
+  margin-top: 30px;
+}
+
+.footer a {
+  display: block;
+  font-size: 14px;
+  color: #333;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #007bff;
+}
+
+.user-profile {
+  margin-top: 40px;
+}
+
+.user-profile .profile-details p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.user-profile .profile-options {
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.hamburger-menu {
+  font-size: 24px;
+}
+
+/* Adjust for small screens */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    padding: 10px;
+  }
+
+  .sidebar-links a {
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+  }
+
+  .sidebar-header .logo {
+    font-size: 16px;
+  }
+}

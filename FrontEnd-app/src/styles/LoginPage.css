@@ -1,0 +1,92 @@
+/* Styling for the entire login page */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f7fa;
+}
+
+.form-container {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Title styling */
+.login-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Form styling */
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input styling */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-label {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Forget Password Link Styling */
+.forgot-password-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.forgot-password-link a:hover {
+  text-decoration: underline;
+}
+
+/* Sign up link */
+.signup-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signup-link a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.signup-link a:hover {
+  text-decoration: underline;
+}

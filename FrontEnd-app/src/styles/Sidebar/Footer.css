@@ -1,0 +1,49 @@
+/* Footer Container */
+.footer-container {
+    @apply w-full mt-6;
+  }
+  
+  /* User Info Section */
+  .user-info {
+    @apply flex items-center justify-between w-full;
+    padding: 8px 0; /* Add padding for better spacing */
+  }
+  
+  /* Avatar */
+  .user-avatar {
+    @apply flex items-center justify-center bg-gray-300 rounded-full;
+    width: 40px; /* Increased avatar size for better visibility */
+    height: 40px;
+  }
+  
+  .avatar-placeholder {
+    @apply text-gray-600 text-2xl; /* Increased icon size to fill larger avatar */
+  }
+  
+  /* User Details */
+  .user-details {
+    @apply ml-3 flex flex-col text-sm; /* Slightly reduced text size and spacing */
+    min-width: 120px; /* Ensure enough space for both name and email */
+  }
+  
+  .user-name {
+    @apply font-semibold text-gray-800;
+    font-size: 1rem; /* Increased font size for name */
+    margin-bottom: 2px; /* Reduced gap between username and email */
+  }
+  
+  .user-email {
+    @apply text-gray-600 text-sm; /* Increased font size for email */
+    margin-top: 0; /* Remove top margin to bring email closer to the username */
+  }
+  
+  /* More Options Button */
+  .more-options {
+    @apply text-gray-500 text-lg hover:text-black;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: auto; /* Push the button to the far right */
+  }
+  

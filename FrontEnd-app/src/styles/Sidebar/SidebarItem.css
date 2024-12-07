@@ -1,0 +1,16 @@
+.sidebar-item {
+    @apply flex items-center justify-between p-2 hover:bg-gray-100 rounded cursor-pointer;
+  }
+  
+  .item-content {
+    @apply flex items-center space-x-2;
+  }
+  
+  .sub-items {
+    @apply ml-4 mt-2;
+  }
+  
+  .sub-item {
+    @apply text-sm text-gray-600 hover:text-black;
+  }
+  

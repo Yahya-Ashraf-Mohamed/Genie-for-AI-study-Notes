@@ -1,0 +1,41 @@
+/* WelcomePage.css */
+.welcome-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f4;  /* You can change the background color */
+}
+
+.content {
+  text-align: center;
+}
+
+
+.logo {
+  width: 450px;  /* Adjust the size of your logo */
+  height: 450px;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  color: black;
+  margin-top: 10px;
+}
+
+.get-started-btn {
+  margin-top: 30px;
+  padding: 15px 30px;
+  font-size: 1rem;
+  color: #007bff;  /* Blue text color */
+  background-color: white;
+  border: 2px solid #007bff;  /* Blue border */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.get-started-btn:hover {
+  background-color: #007bff;
+  color: white;
+}

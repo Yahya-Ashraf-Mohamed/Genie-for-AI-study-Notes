@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter
-from config import collection
+from config import *
 from database.schemas import inv_data, all_users
 from database.models import User
 app = FastAPI()
@@ -12,17 +12,18 @@ router = APIRouter()
 
 @router.get("/")
 async def Read_users():
-    data = collection.find()
+    data = test_collection.find()
     return all_users(data)
 
 
 @router.post("/")
 async def create_user(user:User):
     try:
-        resp = collection.insert_one(dict(user))
+        resp = test_collection.insert_one(dict(user))
         return {"status code": 200, "id": str(resp.inserted_id)}
     except Exception as e:
-        return HTTPException(status_code=500, detail=f"{e}")
+        print(e)
+     #   return HTTPException(status_code=500, detail=f"{e}")
 
 
 

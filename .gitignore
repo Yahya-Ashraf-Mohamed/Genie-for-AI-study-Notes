@@ -1,5 +1,6 @@
-
 /BackEnd-app/__pycache__
 /FrontEnd-app/__pycache__
+/BackEnd-app/database/__pycache__
 __pycache__
-
+**/__pycache__/
+*.pyc

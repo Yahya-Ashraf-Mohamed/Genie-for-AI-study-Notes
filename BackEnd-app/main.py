@@ -41,34 +41,7 @@ async def create_user(user:User):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"{e}")
 
-###############     Quiz        ##############
-
-@router.get("/quizzes/", tags=["Quizzes"])
-async def read_all_quizzes():
-    data = quiz_collection.find()
-    return get_all_quizzes(data)
-
-#### Study Material ####
-@router.post("/study_materials/", tags=["Study Materials"])
-async def add_study_material(material: StudyMaterial):
-    try:
-        # Insert material into MongoDB
-        resp = study_material_collection.insert_one(material.dict())
-        return {"status_code": 200, "id": str(90)}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error inserting study material: {e}")
-    
-
-@router.get("/study_materials/", tags=["Study Materials"])
-async def view_study_materials(material:StudyMaterial):
-    try:
-        data = study_material_collection.find()
-        return all_materials(data)
-    except Exception as e :
-        print("no study material")
-
-
-@app.get("/search/", tags=["Study Materials"])
+@app.get("/search_users/", tags=["Users"]) ##to be edited
 async def search_study_material(title: str):
     try:
        
@@ -80,7 +53,17 @@ async def search_study_material(title: str):
         return {"status_code": 200, "found_materials": materials}
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error searching for study materials: {e}")
+        raise HTTPException(status_code=500, detail=f"Error searching for users: {e}")
+
+
+
+###############     Quiz        ##############
+
+@router.get("/quizzes/", tags=["Quizzes"])
+async def read_all_quizzes():
+    data = quiz_collection.find()
+    return get_all_quizzes(data)
+
 
 @app.get("/quiz/{quiz_id}", tags=["Quizzes"])
 async def read_quiz(quiz_id: str):
@@ -101,6 +84,54 @@ async def create_quiz(quiz:Quiz):
         return {"status code": 200, "id": str(res.inserted_id)}
     except Exception as e:
         return HTTPException(status_code=500, detail=f"{e}")
+
+@app.get("/search_quizzes/", tags=["Quizzes"]) ##to be edited
+async def search_study_material(title: str):
+    try:
+       
+        results = study_material_collection.find({"title": {"$regex": title, "$options": "i"}})
+        materials = [StudyMaterial(**result) for result in results]
+        if not materials:
+            raise HTTPException(status_code=404, detail="No study materials found with that title.")
+        
+        return {"status_code": 200, "found_materials": materials}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching for quizzes: {e}")
+
+#### Study Material ####
+@router.post("/study_materials/", tags=["Study Materials"])
+async def add_study_material(material: StudyMaterial):
+    try:
+        # Insert material into MongoDB
+        res = study_material_collection.insert_one(material.dict())
+        return {"status_code": 200, "id": str(res.inserted_id)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error inserting study material: {e}")
+    
+
+@router.get("/study_materials/", tags=["Study Materials"])
+async def view_study_materials(material:StudyMaterial):
+    try:
+        data = study_material_collection.find()
+        return all_materials(data)
+    except Exception as e :
+        print("no study material")
+
+
+@app.get("/search_study_materials/", tags=["Study Materials"])
+async def search_study_material(title: str):
+    try:
+       
+        results = study_material_collection.find({"title": {"$regex": title, "$options": "i"}})
+        materials = [StudyMaterial(**result) for result in results]
+        if not materials:
+            raise HTTPException(status_code=404, detail="No study materials found with that title.")
+        
+        return {"status_code": 200, "found_materials": materials}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching for study materials: {e}")
 
 
 app.include_router(router)

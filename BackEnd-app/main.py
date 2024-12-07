@@ -48,6 +48,27 @@ async def read_all_quizzes():
     data = quiz_collection.find()
     return get_all_quizzes(data)
 
+#### Study Material ####
+@router.post("/study_materials/", tags=["Study Materials"])
+async def add_study_material(material: StudyMaterial):
+    try:
+        # Insert material into MongoDB
+        resp = study_material_collection.insert_one(material.dict())
+        return {"status_code": 200, "id": str(90)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error inserting study material: {e}")
+    
+
+@router.get("/study_materials/", tags=["Study Materials"])
+async def view_study_materials(material:StudyMaterial):
+    try:
+        data = study_material_collection.find()
+        return all_materials(data)
+    except Exception as e :
+        print("no study material")
+
+
+
 
 @app.get("/quiz/{quiz_id}", tags=["Quizzes"])
 async def read_quiz(quiz_id: str):

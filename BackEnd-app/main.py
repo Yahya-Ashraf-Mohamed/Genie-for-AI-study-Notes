@@ -3,7 +3,9 @@ from config import *
 from bson.objectid import ObjectId
 from database.schemas import *
 from database.models import *
-app = FastAPI()
+
+
+app = FastAPI(title="Genie - AI Study Assistant")
 router = APIRouter()
 from helperFunctions import *
 
@@ -42,6 +44,7 @@ async def create_user(user:User):
         return HTTPException(status_code=500, detail=f"{e}")
 
 @app.get("/search_users/", tags=["Users"]) ##to be edited
+
 async def search_study_material(title: str):
     try:
        

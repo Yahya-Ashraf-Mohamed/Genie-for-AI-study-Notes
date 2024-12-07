@@ -1,0 +1,36 @@
+/* src/styles/TabOptions.css */
+
+.tab-options {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.tab-options button {
+  padding: 12px 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.tab-options button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.tab-options button:hover {
+  background-color: #f1f1f1;
+}
+
+.tab-options button:focus {
+  outline: none;
+  border-color: #007bff;
+}

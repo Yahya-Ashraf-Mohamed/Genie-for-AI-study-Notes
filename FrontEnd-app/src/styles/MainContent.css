@@ -1,0 +1,131 @@
+/* src/styles/MainContent.css */
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #f7f7f7;
+  width: 100%;
+  height: 100vh; /* Full height */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+.content {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* AI Response Display */
+.ai-response-display {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  height: 150px; /* Fixed height for scrollable area */
+  overflow-y: auto; /* Enables vertical scrolling */
+  margin-bottom: 20px; /* Add some space below */
+  max-width: 100%;
+}
+
+.ai-response-display p {
+  margin: 0;
+  white-space: pre-wrap; /* Ensures line breaks in the AI response */
+  word-wrap: break-word; /* Prevents words from overflowing */
+}
+
+/* Action Buttons Container */
+.action-buttons-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 10px; /* Add some space between buttons */
+  background-color: #b0b0b0; /* Medium gray background */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.action-box {
+  display: flex;
+  align-items: center;
+  background-color: #6a6969; /* Dark gray background for each button */
+  color: #fff;
+  padding: 6px 12px; /* Smaller padding for smaller buttons */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative; /* Needed for the dropdown to position */
+}
+
+.action-box:hover {
+  background-color: #444;
+}
+
+.action-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.action-box.active {
+  background-color: #aaa; /* Highlight active tab */
+}
+
+.dropdown-container {
+  position: absolute;
+  top: 50%;
+  left: 100%; /* Move to the right of the button */
+  transform: translateY(-50%); /* Align vertically with the button */
+  background-color: #d3d3d3;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+  min-width: 180px; /* Ensure enough space for the labels and dropdowns */
+}
+
+.dropdown-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.dropdown {
+  padding: 8px;
+  margin: 0;
+  border-radius: 5px;
+  width: 120px; /* Fixed width for dropdowns */
+}
+
+.action-buttons-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.generate-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.generate-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.generate-button:hover:enabled {
+  background-color: #0056b3;
+}

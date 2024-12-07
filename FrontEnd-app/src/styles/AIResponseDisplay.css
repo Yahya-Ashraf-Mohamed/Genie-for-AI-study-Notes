@@ -1,0 +1,17 @@
+/* src/styles/AIResponseDisplay.css */
+
+.ai-response-display {
+  background-color: #f1f1f1;
+  padding: 20px;
+  border-radius: 8px;
+  height: 150px; /* Fixed height for scrollable area */
+  overflow-y: auto; /* Enables vertical scrolling */
+  margin-bottom: 20px; /* Add some space below */
+  max-width: 100%;
+}
+
+.ai-response-display p {
+  margin: 0;
+  white-space: pre-wrap; /* Ensures line breaks in the AI response */
+  word-wrap: break-word; /* Prevents words from overflowing */
+}

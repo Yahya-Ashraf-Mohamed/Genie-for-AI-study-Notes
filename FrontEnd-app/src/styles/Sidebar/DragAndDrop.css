@@ -1,0 +1,55 @@
+/* Container */
+.drag-drop-container {
+    @apply w-full max-w-full border border-gray-300 rounded-md bg-white shadow-md px-4 py-6;
+    position: relative;
+    width: 80%; /* Adjusted width to 80% of the sidebar width */
+    margin: 0 auto; /* Center the container inside the sidebar */
+  }
+  
+  /* Header Section */
+  .drag-header {
+    @apply flex justify-between items-center mb-4;
+  }
+  
+  .cancel-btn {
+    @apply text-gray-500 text-sm hover:text-gray-700 font-medium;
+  }
+  
+  .save-btn {
+    @apply text-gray-800 text-sm font-bold hover:underline;
+  }
+  
+  /* Drag Area */
+  .drag-area {
+    @apply text-center flex flex-col justify-center items-center mt-8;
+  }
+  
+  .drag-text {
+    @apply text-gray-500 font-medium text-base;
+  }
+  
+  .or-text {
+    @apply text-gray-400 text-sm font-light mt-1 mb-3;
+  }
+  
+  .button-container {
+    @apply flex gap-4;
+  }
+  
+  .browse-btn {
+    @apply px-5 py-2 bg-black text-white text-sm rounded-md hover:bg-gray-800 transition-all;
+  }
+  
+  /* Shadows */
+  .shadow-md {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Adjusting for mobile responsiveness */
+  @media (max-width: 768px) {
+    .drag-drop-container {
+      width: 100%; /* On mobile, make it take up full width of the sidebar */
+      max-width: 100%;
+    }
+  }
+  

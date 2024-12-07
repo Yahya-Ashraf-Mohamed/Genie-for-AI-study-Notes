@@ -1,0 +1,10 @@
+  /* Basic resets and shared styles for the app */
+  body {
+    @apply bg-gray-50 text-gray-800 font-sans;
+  }
+  
+  a {
+    @apply text-blue-500 hover:underline;
+  }
+
+  

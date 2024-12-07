@@ -1,7 +1,7 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from config import *
-from database.schemas import inv_data, all_users
-from database.models import User
+from database.schemas import *
+from database.models import *
 app = FastAPI()
 router = APIRouter()
 
@@ -10,20 +10,27 @@ router = APIRouter()
 #     return {"message": "Welcome to the FastAPI backend!"}
 
 
-@router.get("/")
-async def Read_users():
-    data = test_collection.find()
-    return all_users(data)
 
-
-@router.post("/")
-async def create_user(user:User):
+#### Study Material ####
+@router.post("/study_materials/", tags=["Study Materials"])
+async def add_study_material(material: StudyMaterial):
     try:
-        resp = test_collection.insert_one(dict(user))
-        return {"status code": 200, "id": str(resp.inserted_id)}
+        # Insert material into MongoDB
+        resp = study_material_collection.insert_one(material.dict())
+        return {"status_code": 200, "id": str(90)}
     except Exception as e:
-        print(e)
-     #   return HTTPException(status_code=500, detail=f"{e}")
+        raise HTTPException(status_code=500, detail=f"Error inserting study material: {e}")
+    
+
+@router.get("/study_materials/", tags=["Study Materials"])
+async def view_study_materials(material:StudyMaterial):
+    try:
+        data = study_material_collection.find()
+        return all_materials(data)
+    except Exception as e :
+        print("no study material")
+
+
 
 
 

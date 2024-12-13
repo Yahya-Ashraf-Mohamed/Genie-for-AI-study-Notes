@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from config import *
 from bson.objectid import ObjectId
 from database.schemas import *
@@ -6,6 +7,16 @@ from database.models import *
 
 
 app = FastAPI(title="Genie - AI Study Assistant")
+
+origins = ['http://localhost:3000']  #
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  
+    allow_credentials=True,
+    allow_headers=["*"],
+    allow_methods=["*"],
+)
+
 router = APIRouter()
 from helperFunctions import *
 
@@ -102,7 +113,10 @@ async def search_study_material(title: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching for quizzes: {e}")
 
-#### Study Material ####
+
+
+###############     Study material       ##############
+
 @router.post("/study_materials/", tags=["Study Materials"])
 async def add_study_material(material: StudyMaterial):
     try:

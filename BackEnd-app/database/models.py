@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 class User(BaseModel):
     username: str
     password: str
-    isPremium: bool
+    isPremium: Optional [bool] = False
     email: EmailStr  
     registrationDate: datetime  = datetime.timestamp(datetime.now())
     preferences: Optional[List[str]] = None 

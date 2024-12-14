@@ -1,18 +1,27 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import { createUser } from "../services/api";  // Import API function
 import '../styles/SignUpPage.css';
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();  // Initialize navigate
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
-    e.preventDefault();
-    
-    // Simulate successful sign-up and redirect to home
-    console.log("Sign-up successful!");
-    navigate("/");  // Redirect to home page
+  const handleSignUp = async (e) => {
+    e.preventDefault();  // Prevent form reload
+
+    try {
+      // Call the back-end to create the user
+      const result = await createUser(email, password);
+      console.log("Sign-up successful!", result);
+
+      // Redirect to home on success
+      navigate("/");
+    } catch (err) {
+      setError("Sign-up failed. Please try again.");
+    }
   };
 
   return (
@@ -48,7 +57,9 @@ const SignUpPage = () => {
 
           <button type="submit" className="signup-btn">Sign Up</button>
         </form>
-        
+
+        {error && <p className="error-message">{error}</p>}  {/* Show error if exists */}
+
         <div className="login-link">
           <p>Already have an account? <a href="/login">Login</a></p>
         </div>

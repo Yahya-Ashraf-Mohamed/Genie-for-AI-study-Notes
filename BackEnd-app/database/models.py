@@ -5,13 +5,14 @@ from datetime import datetime, timedelta
 class User(BaseModel):
     username: str
     password: str
-    isPremium: Optional [bool] = False
-    email: EmailStr  
-    registrationDate: datetime  = datetime.timestamp(datetime.now())
-    preferences: Optional[List[str]] = None 
-    studyGoals: Optional[str] = None        
-    usageStats: Optional[dict] = None       
-    progressReports: Optional[List[str]] = None 
+    isPremium: Optional[bool] = False
+    email: EmailStr
+    registrationDate: datetime = datetime.now()
+    preferences: Optional[List[str]] = []
+    studyGoals: Optional[str] = ""
+    usageStats: Optional[dict] = {}
+    progressReports: Optional[List[str]] = []
+
 
 class Quiz(BaseModel):
     title: str

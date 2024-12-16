@@ -38,8 +38,7 @@ def get_quiz(quiz: Quiz):
 
 def get_all_quizzes(quizzes):
     return [get_user(quiz) for quiz in quizzes]
-def all_users(users):
-    return [inv_data(user) for user in users]
+
 
 
 #### Study Materials ####
@@ -58,3 +57,20 @@ def Material(study_material):
 
 def all_materials(study_material):
     return[Material(material) for material in study_material]
+
+
+
+##########      Summary     ##########
+def get_summary_result(summary):
+    return {
+        "summary_id": summary["summary_id"],
+        "material_id": summary["material_id"],
+        "generated_summary": summary["generated_summary"],
+        "detail_level": summary["detail_level"],
+    }
+
+def get_all_summaries(summaries):
+    return [get_summary_result(summary) for summary in summaries]
+
+
+

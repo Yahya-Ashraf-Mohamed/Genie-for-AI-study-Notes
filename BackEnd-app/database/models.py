@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, HttpUrl
 from typing import List, Optional, Dict
 from datetime import datetime, timedelta
 
@@ -29,10 +29,16 @@ class Quiz(BaseModel):
     feedback: Optional[dict] = None
 
 class StudyMaterial(BaseModel):
-    material_id : str
-    title : str
-    content_type : str
-    language : str
+    material_id: str  
+    title: str  
+    description: Optional[str] = None  
+    content_type: str  
+    language: str  
+    file_url: HttpUrl   
+    uploaded_date: datetime = datetime.now()  # Date when the material was uploaded
+    category: Optional[str] = None  # Category of the material (e.g., 'Mathematics', 'Physics', etc.)
+    is_public: bool = True  # Whether the material is public or private
+    
 
 
 class Summary(BaseModel):

@@ -45,13 +45,14 @@ async def read_user(user_id: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-@router.post("/user", tags=["Users"])  # Removed trailing slash
+@router.post("/user", tags=["Users"]) 
 async def create_user(user: User):
     try:
         res = user_collection.insert_one(dict(user))
         return {"status code": 200, "id": str(res.inserted_id)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{e}")
+
 
 @app.get("/search_users/", tags=["Users"]) ##to be edited
 

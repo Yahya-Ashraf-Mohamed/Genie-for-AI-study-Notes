@@ -47,8 +47,13 @@ def Material(study_material):
     return {
         "material_id": study_material["material_id"],
         "title": study_material["title"],
+        "description": study_material.get("description", None),
         "content_type": study_material["content_type"],
-        "language": study_material["language"]
+        "language": study_material["language"],
+        "file_url": study_material["file_url"],
+        "uploaded_date": study_material["uploaded_date"],
+        "category": study_material.get("category", None),
+        "is_public": study_material.get("is_public", True)
     }
 
 def all_materials(study_material):

@@ -74,3 +74,24 @@ def get_all_summaries(summaries):
 
 
 
+##########      chat        ############
+def get_chat_message(message: dict):
+    """
+    Converts a single chat message document to a Python dictionary.
+    """
+    return {
+        "sender": message["sender"],  # 'user' or 'system'
+        "message": message["message"],
+        "timestamp": message["timestamp"],
+    }
+
+
+def get_chat_session(session: dict):
+    """
+    Converts a chat session document to a Python dictionary.
+    """
+    return {
+        "session_id": session["session_id"],
+        "material_id": session["material_id"],
+        "chat_history": [get_chat_message(msg) for msg in session.get("chat_history", [])],
+    }

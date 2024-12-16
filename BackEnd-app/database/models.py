@@ -44,9 +44,25 @@ class StudyMaterial(BaseModel):
 class Summary(BaseModel):
     Summary_id : str
     material_id : str
-    content : str
+    generated_summary : str
     detail_level : str
 
 class FlashCard(BaseModel):
     flash_id : str
+
+
+
+class ChatMessage(BaseModel):
+    sender: str  # "user" or "system" 
+    message: str  # User's question or system's answer
+    timestamp: datetime = datetime.now()  # Message timestamp
+
+
+class ChatSession(BaseModel):
+    session_id: str  
+    material_id: str  
+    chat_history: List[ChatMessage] = []  # List of messages in the chat
+
+
+    
     

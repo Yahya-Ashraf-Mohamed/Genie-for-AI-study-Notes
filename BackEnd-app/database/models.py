@@ -28,8 +28,7 @@ class Quiz(BaseModel):
     passingScore: Optional[float] = None
     feedback: Optional[dict] = None
 
-class StudyMaterial(BaseModel):
-    material_id: str  
+class StudyMaterial(BaseModel): 
     title: str  
     description: Optional[str] = None  
     content_type: str  
@@ -42,7 +41,6 @@ class StudyMaterial(BaseModel):
 
 
 class Summary(BaseModel):
-    Summary_id : str
     material_id : str
     generated_summary : str
     detail_level : str
@@ -58,8 +56,7 @@ class ChatMessage(BaseModel):
     timestamp: datetime = datetime.now()  # Message timestamp
 
 
-class ChatSession(BaseModel):
-    session_id: str  
+class ChatSession(BaseModel): 
     material_id: str  
     chat_history: List[ChatMessage] = []  # List of messages in the chat
 

@@ -60,6 +60,8 @@ class ChatSession(BaseModel):
     material_path: str  
     chat_history: List[ChatMessage] = []  # List of messages in the chat
 
+class IncomingChatMessage(BaseModel):
+    chat_session_id : str
+    message_content: str
 
-    
     

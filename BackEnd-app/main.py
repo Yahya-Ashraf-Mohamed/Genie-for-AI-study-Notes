@@ -6,7 +6,7 @@ from database.schemas import *
 from database.models import *
 from fastapi import Request
 from fastapi.responses import JSONResponse
-from AI import PDFProcessor
+#from AI import PDFProcessor
 from helperFunctions import *
 
 
@@ -29,7 +29,7 @@ from helperFunctions import *
 
 @router.get("/")
 async def hello():
-    return await create_chat()
+    return "ok"#await create_chat()
 
 
 ###############     User        ##############
@@ -172,24 +172,66 @@ async def search_study_material(title: str):
 
 ###############     Create Chat       ##############
 
-# @router.get("/chats/", tags=["chats"])
-# async def read_all_users():
-#     data = user_collection.find()
-#     return get_all_users(data)
+@app.get("/chat/{chat_id}", tags=["chats"])
+async def read_chat(chat_id: str):
+    try:
+        chat = chat_sessions_collection.find_one({"_id": ObjectId(chat_id)})
+        if chat:
+            return mongo_to_dict(chat)
+        else:
+            raise HTTPException(status_code=404, detail="chat not found")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.post("/newchat", tags=["chats"]) 
+async def create_chat(chat: ChatSession):
+    try:
+        res = chat_sessions_collection.insert_one(dict(chat))
+        return {"status code": 200, "id": str(res.inserted_id)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{e}")
+
+
+@router.post("/SendMessage", tags=["chats"]) 
+async def send_message(message: IncomingChatMessage):
+    try:
+        # Find the chat session
+        chat = chat_sessions_collection.find_one({"_id": ObjectId(message.chat_session_id)})
+        if not chat:
+            raise HTTPException(status_code=404, detail="Chat session not found")
+
+        # Create a new ChatMessage instance
+        new_message = ChatMessage(sender=True, message=message.message_content)
+        updated_chat_history = chat.get("chat_history", [])
+        updated_chat_history.append(new_message.dict())
+        # Update the chat session in the database
+        chat_sessions_collection.update_one(
+            {"_id": ObjectId(message.chat_session_id)},
+            {"$set": {"chat_history": updated_chat_history}}
+        )
+
+        answer = AI_response(message.message_content)
+
+        # Create a new ChatMessage instance
+        new_message = ChatMessage(sender=True, message=answer)
+        updated_chat_history = chat.get("chat_history", [])
+        updated_chat_history.append(new_message.dict())
+        # Update the chat session in the database
+        chat_sessions_collection.update_one(
+            {"_id": ObjectId(message.chat_session_id)},
+            {"$set": {"chat_history": updated_chat_history}}
+        )
 
 
 
+        return {"status code": 200, "message": "Message added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"{e}")
 
 
 
-
-
-
-
-
-
-
-
+def AI_response(message):
+    return f"This is the AI answer to::: {message}"
 
 
 

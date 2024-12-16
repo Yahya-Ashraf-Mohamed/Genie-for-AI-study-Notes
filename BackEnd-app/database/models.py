@@ -51,13 +51,13 @@ class FlashCard(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    sender: str  # "user" or "system" 
+    sender: bool  # sys:0     user:1  
     message: str  # User's question or system's answer
     timestamp: datetime = datetime.now()  # Message timestamp
 
 
 class ChatSession(BaseModel): 
-    material_id: str  
+    material_path: str  
     chat_history: List[ChatMessage] = []  # List of messages in the chat
 
 

@@ -6,6 +6,11 @@ from database.schemas import *
 from database.models import *
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from AI import PDFProcessor
+from helperFunctions import *
+
+
+
 
 app = FastAPI(title="Genie - AI Study Assistant")
 

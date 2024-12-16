@@ -4,7 +4,8 @@ from config import *
 from bson.objectid import ObjectId
 from database.schemas import *
 from database.models import *
-
+from fastapi import Request
+from fastapi.responses import JSONResponse
 
 app = FastAPI(title="Genie - AI Study Assistant")
 
@@ -23,7 +24,7 @@ from helperFunctions import *
 
 @router.get("/")
 async def hello():
-    return {"status code": 200,"message":"hello to our website"}
+    return await create_chat()
 
 
 ###############     User        ##############
@@ -162,4 +163,47 @@ async def search_study_material(title: str):
         raise HTTPException(status_code=500, detail=f"Error searching for study materials: {e}")
 
 
+
+
+###############     Create Chat       ##############
+
+# @router.get("/chats/", tags=["chats"])
+# async def read_all_users():
+#     data = user_collection.find()
+#     return get_all_users(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############     Exception Handling       ##############
+
+
+
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc):
+    return JSONResponse(
+        status_code=404,
+        content={"status code": 404, "message": "Hey, endpoint not found. Please check the URL."},
+    )
+
+
+
+
+
 app.include_router(router)
+
+

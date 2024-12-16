@@ -75,6 +75,7 @@ def get_all_summaries(summaries):
 
 
 ##########      chat        ############
+
 def get_chat_message(message: dict):
     """
     Converts a single chat message document to a Python dictionary.

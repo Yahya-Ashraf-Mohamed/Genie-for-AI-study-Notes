@@ -4,6 +4,10 @@ from config import *
 from bson.objectid import ObjectId
 from database.schemas import *
 from database.models import *
+from AI import PDFProcessor
+from helperFunctions import *
+
+
 
 
 app = FastAPI(title="Genie - AI Study Assistant")

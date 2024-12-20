@@ -100,7 +100,7 @@ async def view_study_materials():
         print("no study material")
 
 @router.get("/study_material/{material_id}", tags=["Study Materials"])
-async def view_study_material():
+async def view_study_material(material_id: str):
     try:
         material = study_material_collection.find_one({"_id": ObjectId(material_id)})
         if material:
@@ -130,6 +130,8 @@ async def search_study_material(title: str):
 
 ###############      Chat conversation: Q&A       ##############
 
+
+
 @app.get("/chat/{chat_id}", tags=["chats"])
 async def read_chat(chat_id: str):
     try:
@@ -143,19 +145,23 @@ async def read_chat(chat_id: str):
 
 @router.post("/newchat", tags=["chats"])
 async def create_chat(material_path: str):
-    """
-    Creates a new chat session and stores it in the database.
-    """
     try:
         new_chat = {
             "material_path": material_path,
-            "chat_history": []
+            "chat_history": [],
+            "created_at": datetime.now(),
+            "last_active_at": datetime.now()
         }
         result = chat_sessions_collection.insert_one(new_chat)
-        return {"status": "success", "chat_id": str(result.inserted_id)}
+
+        # Initialize the RAG model and store it in the dictionary
+        rag_model = RagChain(source_name=material_path)
+        rag_model.perform_embedding()
+        rag_instances[ObjectId] = rag_model
+
+        return {"status": "success", "chat_id": ObjectId}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating chat session: {e}")
-
 
 @router.post("/SendMessage", tags=["chats"])
 async def send_message(message: IncomingChatMessage):
@@ -173,22 +179,31 @@ async def send_message(message: IncomingChatMessage):
         chat["chat_history"].append(user_message.dict())
 
         # Generate the RAG model's response
-        material_path = chat["material_path"]
-        answer = get_rag_response(material_path, message.message_content)
+        answer = get_rag_response(
+            session_id=message.chat_session_id,
+            material_path=chat["material_path"],
+            message=message.message_content,
+            chat_history=chat["chat_history"]
+        )
 
         # Append the model's response to the chat history
-        bot_message = ChatMessage(sender="system", message=answer, timestamp=datetime.now())
-        chat["chat_history"].append(bot_message.dict())
+        system_message = ChatMessage(sender="system", message=answer, timestamp=datetime.now())
+        chat["chat_history"].append(system_message.dict())
 
         # Update the chat history in the database
         chat_sessions_collection.update_one(
             {"_id": ObjectId(message.chat_session_id)},
-            {"$set": {"chat_history": chat["chat_history"]}}
+            {
+                "$set": {
+                    "chat_history": chat["chat_history"],
+                    "last_active_at": datetime.now()
+                }
+            }
         )
 
         return {"status": "success", "response": answer, "chat_history": chat["chat_history"]}
 
-
+        """""
         # Create a new ChatMessage instance
         new_message = ChatMessage(sender=True, message=answer)
         updated_chat_history = chat.get("chat_history", [])
@@ -198,9 +213,8 @@ async def send_message(message: IncomingChatMessage):
             {"_id": ObjectId(message.chat_session_id)},
             {"$set": {"chat_history": updated_chat_history}}
         )
-
-
         return {"status code": 200, "message": "Message added successfully"}
+        """""
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in send_message: {e}")
 
@@ -213,12 +227,13 @@ async def resume_chat(session_id: str, question: str):
         if not chat_session:
             raise HTTPException(status_code=404, detail="Chat session not found")
 
-        # Initialize the RAG model and load memory
-        rag_model = RagChain(source_name=chat_session["material_path"])
-        rag_model.load_memory(chat_session["chat_history"])
-
         # Ask a question and get the response
-        answer = rag_model.ask_question(question)
+        answer = get_rag_response(
+            session_id=session_id,
+            material_path=chat_session["material_path"],
+            message=question,
+            chat_history=chat_session["chat_history"]
+        )
 
         # Add the new user and system messages to chat history
         new_user_message = {"sender": "user", "message": question, "timestamp": datetime.now()}
@@ -237,9 +252,6 @@ async def resume_chat(session_id: str, question: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error resuming chat: {e}")
-
-def AI_response(message):
-    return f"This is the AI answer to::: {message}"
 
 
 

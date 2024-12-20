@@ -139,11 +139,12 @@ async def search_study_material(title: str):
 @app.get("/chat/{file_path}", tags=["chats"])
 async def read_chat(file_path: str):
     try:
-        chat = chat_sessions_collection.find_one({"_id": ObjectId(chat_id)})
+        chat = chat_sessions_collection.find_one({"file_path": file_path})
         if chat:
             return mongo_to_dict(chat)
         else:
-            raise HTTPException(status_code=404, detail="chat not found")
+            response = await create_chat(file_path)
+            return response
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -344,7 +345,6 @@ async def list_files():
         return {"files": files}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading files: {str(e)}")
-
 
 
 app.include_router(router)

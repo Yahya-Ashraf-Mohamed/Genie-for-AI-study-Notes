@@ -5,6 +5,9 @@ from bson.objectid import ObjectId
 from database.schemas import *
 from database.models import *
 from fastapi import Request
+from fastapi import File, UploadFile
+import shutil
+from pathlib import Path
 from fastapi.responses import JSONResponse
 from AI import *
 from helperFunctions import *
@@ -132,8 +135,9 @@ async def search_study_material(title: str):
 
 
 
-@app.get("/chat/{chat_id}", tags=["chats"])
-async def read_chat(chat_id: str):
+
+@app.get("/chat/{file_path}", tags=["chats"])
+async def read_chat(file_path: str):
     try:
         chat = chat_sessions_collection.find_one({"_id": ObjectId(chat_id)})
         if chat:
@@ -317,7 +321,29 @@ async def not_found_handler(request: Request, exc):
         content={"status code": 404, "message": "Hey, endpoint not found. Please check the URL."},
     )
 
+UPLOAD_DIR = Path("../Storage")
+UPLOAD_DIR.mkdir(exist_ok=True)  # Create upload directory if not exists
 
+@app.post("/uploadfile/", tags=["files"])
+async def upload_file(file: UploadFile):
+    file_location = UPLOAD_DIR / file.filename
+    try:
+        with file_location.open("wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not save file: {str(e)}")
+
+    return {"info": f"File '{file.filename}' saved at '{file_location}'"}
+
+
+@app.get("/home/", tags=["files"])
+async def list_files():
+    try:
+        # Get all files in the directory
+        files = [file.name for file in UPLOAD_DIR.iterdir() if file.is_file()]
+        return {"files": files}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading files: {str(e)}")
 
 
 

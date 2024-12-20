@@ -1,6 +1,7 @@
 from datetime import datetime
 from database.schemas import get_chat_session
 from config import *
+from AI import *
 
 def mongo_to_dict(doc):
     doc["id"] = str(doc["_id"])
@@ -28,3 +29,17 @@ def get_chat_session_by_id(session_id: str):
     if session:
         return get_chat_session(session)  # Apply schema for clean data
     return None
+
+
+def get_rag_response(material_path: str, question: str):
+    """
+    Initializes the RAG chain dynamically and queries for the answer.
+    """
+    try:
+        # Initialize the RAG Chain
+        rag_model = RagChain(source_name=material_path)
+        response = rag_model.ask_question(question)
+        return response
+    except Exception as e:
+        print(f"Error during RAG response: {e}")
+        return "An error occurred while generating a response."

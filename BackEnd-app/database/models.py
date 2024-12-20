@@ -53,7 +53,7 @@ class FlashCard(BaseModel):
 
 
 class ChatMessage(BaseModel):
-    sender: bool  # sys:0     user:1  
+    sender: str  # sys:0     user:1  
     message: str  # User's question or system's answer
     timestamp: datetime = datetime.now()  # Message timestamp
 

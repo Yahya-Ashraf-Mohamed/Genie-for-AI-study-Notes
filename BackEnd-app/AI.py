@@ -10,12 +10,16 @@ from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_groq import ChatGroq
 from langchain.memory import ConversationSummaryMemory
-from langchain_pinecone import Pinecone
+#from langchain_pinecone import Pinecone
+from langchain.vectorstores import Pinecone
+
 import uuid
 
-
+rag_instances = {}
 ##########      Files Embedding     ##########
 os.environ["PINECONE_API_KEY"] = "pcsk_7a6x6_Mq2MQntZVjiiXLLpdPWXfKdgKatSLRn3FHrETqvixgyR6TEJoZBbw7CtBYAaWnk" 
+os.environ["GROQ_API_KEY"] = "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"
+
 class PDFProcessor:
     def __init__(self,pdf_path, index_name="gradproject", embedding_model="BAAI/bge-base-en-v1.5", chunk_size=1000, chunk_overlap=100):
         self.pdf_path = pdf_path
@@ -123,7 +127,7 @@ class RagChain:
             print(f"Error while querying the chain: {e}")
             return "An error occurred while processing your question."
         
-        
+
 
     def load_memory(self, chat_history):
         """Reconstructs memory from saved chat history."""

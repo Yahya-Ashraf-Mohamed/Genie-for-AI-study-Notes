@@ -60,8 +60,9 @@ class ChatMessage(BaseModel):
 
 class ChatSession(BaseModel): 
     material_path: str  
-    rag_model: RagChain
     chat_history: List[ChatMessage] = []  # List of messages in the chat
+    created_at: datetime = datetime.now()
+    last_active_at: datetime = datetime.now()
     
 
 class IncomingChatMessage(BaseModel):

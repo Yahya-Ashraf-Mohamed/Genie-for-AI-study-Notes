@@ -2,6 +2,7 @@ from datetime import datetime
 from database.schemas import get_chat_session
 from config import *
 from AI import *
+from main import rag_instances
 
 def mongo_to_dict(doc):
     doc["id"] = str(doc["_id"])
@@ -31,15 +32,21 @@ def get_chat_session_by_id(session_id: str):
     return None
 
 
-def get_rag_response(material_path: str, question: str):
+def get_rag_response(session_id: str, material_path: str, message: str, chat_history: list):
     """
-    Initializes the RAG chain dynamically and queries for the answer.
+    Retrieves a response from the RAG model while ensuring
+    that only one instance of the RAG model is active per session.
     """
-    try:
-        # Initialize the RAG Chain
+    # Check if the RAG model instance exists
+    if session_id not in rag_instances:
+        # Create and load memory for a new instance
         rag_model = RagChain(source_name=material_path)
-        response = rag_model.ask_question(question)
-        return response
-    except Exception as e:
-        print(f"Error during RAG response: {e}")
-        return "An error occurred while generating a response."
+        rag_model.load_memory(chat_history)
+        rag_instances[session_id] = rag_model
+    else:
+        # Use existing instance
+        rag_model = rag_instances[session_id]
+
+    # Ask the question and return the response
+    response = rag_model.ask_question(message)
+    return response

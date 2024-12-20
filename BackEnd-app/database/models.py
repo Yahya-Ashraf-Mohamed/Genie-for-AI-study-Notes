@@ -16,8 +16,9 @@ class User(BaseModel):
 
 
 class Quiz(BaseModel):
-    title: str
+    title: str = None
     description: Optional[str] = None
+    material_used: str
     creator: str
     creationDate: datetime = datetime.now()
     dueDate: datetime = datetime.now() + timedelta(days=7)

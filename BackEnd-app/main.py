@@ -370,6 +370,39 @@ async def list_files():
         raise HTTPException(status_code=500, detail=f"Error reading files: {str(e)}")
 
 
+material=None
+
+@router.post("/newchat", tags=["chats"])
+async def create_chat(material_path: str):
+    global material
+    material=material_path
+    try:
+        return {"message": f"Model instance for '{material_path}' is successfully prepared."}
+
+    except Exception as e:
+        # Catch and return any errors
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+@router.post("/ask_rag_model", tags=["chats"])
+async def ask_question(question: str):
+    global material
+    rag_model = RagChain(source_name=material)
+    if rag_model is None:
+        raise HTTPException(status_code=400, detail="RAG model is not initialized. Please initialize the model first.")  
+    try:
+        print(rag_model.souce_name)
+        model_answer = rag_model.ask_question(question) # Ask the question and get the response
+    except Exception as e:
+        # Catch and return any errors
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    try:
+        answer = model_answer["result"]
+        return {"answer": answer}
+
+    except Exception as e:
+        raise HTTPException(status_code=500,detail=f"the model return no result: {str(e)}")
+
+
 app.include_router(router)
 
 

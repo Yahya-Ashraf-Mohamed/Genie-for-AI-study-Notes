@@ -11,8 +11,14 @@ from pathlib import Path
 from fastapi.responses import JSONResponse
 from AI import *
 from helperFunctions import *
+import os
+
+from dotenv import load_dotenv
+load_dotenv()
 
 
+
+print(os.getenv("PINECONE_API_KEY"))
 
 
 app = FastAPI(title="Genie - AI Study Assistant")
@@ -322,19 +328,36 @@ async def not_found_handler(request: Request, exc):
         content={"status code": 404, "message": "Hey, endpoint not found. Please check the URL."},
     )
 
+
+
+#################### file upload ####################
+
+
+
 UPLOAD_DIR = Path("../Storage")
 UPLOAD_DIR.mkdir(exist_ok=True)  # Create upload directory if not exists
 
 @app.post("/uploadfile/", tags=["files"])
 async def upload_file(file: UploadFile):
     file_location = UPLOAD_DIR / file.filename
+    #file_location = 'C:\Users\MA\Desktop\SW-Project\Genie-for-AI-study-Notes\Storage'
+    print(file_location)
     try:
         with file_location.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not save file: {str(e)}")
 
+    try:
+        # create embedding for the pdf file in Pinecone
+        pdf_processor=PDFProcessor(file_location)
+       # pdf_processor.prepare_pdf()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Could not create embedding for the uploaded pdf {str(e)}")
+
     return {"info": f"File '{file.filename}' saved at '{file_location}'"}
+
+
 
 
 @app.get("/home/", tags=["files"])

@@ -1,19 +1,14 @@
 import os
-from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import FastEmbedEmbeddings
-from langchain.vectorstores import Chroma
-from langchain.vectorstores.utils import filter_complex_metadata
-from langchain.prompts import PromptTemplate
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
 from langchain.chains import RetrievalQA
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_groq import ChatGroq
 from langchain.memory import ConversationSummaryMemory
-#from langchain_pinecone import Pinecone
-from langchain.vectorstores import Pinecone
-
+from langchain_pinecone import Pinecone
 import uuid
+from pathlib import Path
 
 rag_instances = {}
 ##########      Files Embedding     ##########
@@ -22,14 +17,16 @@ os.environ["GROQ_API_KEY"] = "gsk_MD15s2PSEkE8H1e3oJSeWGdyb3FYACFy9BduZJb5zybnKR
 
 class PDFProcessor:
     def __init__(self,pdf_path, index_name="gradproject", embedding_model="BAAI/bge-base-en-v1.5", chunk_size=1000, chunk_overlap=100):
-        self.pdf_path = pdf_path
+        self.pdf_path = Path(pdf_path)
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.embeddings = FastEmbedEmbeddings(model_name=embedding_model)
-    
+        self.pages=None
+        self.texts=None
+        self.index_name=index_name
         # Initialize Pinecone vector store
         self.vector_db =  Pinecone.from_existing_index(
-            index_name=index_name,
+            index_name=self.index_name,
             embedding=self.embeddings,
             text_key="text" 
         )
@@ -53,7 +50,7 @@ class PDFProcessor:
     def perform_embedding(self):
         """Generates embeddings and stores them in Pinecone with the PDF file name as metadata."""
         # Create metadata for each chunk (e.g., including the PDF file name)
-        metadatas = [{"source": self.pdf_path, "id": str(uuid.uuid4())} for _ in self.texts]
+        metadatas = [{"source": str(self.pdf_path), "id": str(uuid.uuid4())} for _ in self.texts]
 
         # Add text chunks and their metadata to the Pinecone index
         texts = [doc.page_content for doc in self.texts]  # Extract text content from Document objects
@@ -72,7 +69,7 @@ class PDFProcessor:
 
 ##########      RAG     ##########
 class RagChain:
-    def __init__(self,  source_name,index_name="gradproject", embedding_model="BAAI/bge-base-en-v1.5", model_name="llama-3.3-70b-versatile"):
+    def __init__(self, source_name,index_name="gradproject", embedding_model="BAAI/bge-base-en-v1.5", model_name="llama-3.3-70b-versatile"):
         self.model_name = model_name
         self.groq_client = ChatGroq(temperature=0, model_name=model_name)
         self.memory = ConversationSummaryMemory(memory_key="chat_history", return_messages=True, llm=self.groq_client)
@@ -134,3 +131,4 @@ class RagChain:
         for msg in chat_history:
             sender = "user" if msg["sender"] == "user" else "system"
             self.memory.add_message(sender, msg["message"])
+

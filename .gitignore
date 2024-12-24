@@ -6,3 +6,5 @@ __pycache__
 *.pyc
 storage/*
 !storage/.gitignore
+/BackEnd-app/env
+/BackEnd-app/database/__pycache__

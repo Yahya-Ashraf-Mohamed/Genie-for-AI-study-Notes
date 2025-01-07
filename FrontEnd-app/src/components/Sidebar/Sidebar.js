@@ -38,7 +38,7 @@ const Sidebar = () => {
       <div className="divider" />
 
       {/* Drag and Drop section */}
-      <DragAndDrop />
+      {/* <DragAndDrop /> */}
 
       {/* Divider */}
       <div className="divider" />

@@ -129,3 +129,138 @@ h1 {
 .generate-button:hover:enabled {
   background-color: #0056b3;
 }
+
+
+
+
+/* File Upload Input and Button */
+.file-upload-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.file-upload-input {
+  padding: 10px;
+  margin-right: 20px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background-color: #45a049;
+}
+
+/* File List */
+.uploaded-files-section {
+  margin-top: 30px;
+}
+
+.uploaded-files-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.uploaded-file-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* File action buttons */
+.file-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.chat-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.chat-btn:hover {
+  background-color: #45a049;
+}
+
+.summary-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.summary-btn:hover {
+  background-color: #0b7dda;
+}
+
+.quiz-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.quiz-btn:hover {
+  background-color: #e53935;
+}
+
+/* for the chat page content  */
+
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  background: #fff;
+}
+
+.chat-history {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+
+.chat-message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+.user-message {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.ai-message {
+  align-self: flex-start;
+  text-align: left;
+}

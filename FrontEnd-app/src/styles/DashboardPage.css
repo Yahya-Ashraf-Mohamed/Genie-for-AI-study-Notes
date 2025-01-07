@@ -1,0 +1,7 @@
+/* Dashboard Container Styling */
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column; /* Column layout for main content */
+  overflow-y: auto;
+}

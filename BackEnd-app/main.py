@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from config import *
-from bson.objectid import ObjectId
+# from bson.objectid import ObjectId
 from database.schemas import *
 from database.models import *
 from fastapi import Request
@@ -11,14 +11,8 @@ from pathlib import Path
 from fastapi.responses import JSONResponse
 from AI import *
 from helperFunctions import *
-import os
-
-from dotenv import load_dotenv
-load_dotenv()
 
 
-
-print(os.getenv("PINECONE_API_KEY"))
 
 
 app = FastAPI(title="Genie - AI Study Assistant")
@@ -49,16 +43,16 @@ async def read_all_users():
     return get_all_users(data)
 
 
-@app.get("/user/{user_id}", tags=["Users"])
-async def read_user(user_id: str):
-    try:
-        user = user_collection.find_one({"_id": ObjectId(user_id)})
-        if user:
-            return mongo_to_dict(user)
-        else:
-            raise HTTPException(status_code=404, detail="User not found")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+# @app.get("/user/{user_id}", tags=["Users"])
+# async def read_user(user_id: str):
+#     try:
+#         user = user_collection.find_one({"_id": ObjectId(user_id)})
+#         if user:
+#             return mongo_to_dict(user)
+#         else:
+#             raise HTTPException(status_code=404, detail="User not found")
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/user", tags=["Users"]) 
 async def create_user(user: User):
@@ -108,16 +102,16 @@ async def view_study_materials():
     except Exception as e :
         print("no study material")
 
-@router.get("/study_material/{material_id}", tags=["Study Materials"])
-async def view_study_material(material_id: str):
-    try:
-        material = study_material_collection.find_one({"_id": ObjectId(material_id)})
-        if material:
-            return mongo_to_dict(material)
-        else:
-            raise HTTPException(status_code=404, detail="material not found")
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+# @router.get("/study_material/{material_id}", tags=["Study Materials"])
+# async def view_study_material(material_id: str):
+#     try:
+#         material = study_material_collection.find_one({"_id": ObjectId(material_id)})
+#         if material:
+#             return mongo_to_dict(material)
+#         else:
+#             raise HTTPException(status_code=404, detail="material not found")
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/search_study_materials/", tags=["Study Materials"])
@@ -139,95 +133,125 @@ async def search_study_material(title: str):
 
 ###############      Chat conversation: Q&A       ##############
 
-
-
-
-@app.get("/chat/{file_path}", tags=["chats"])
-async def read_chat(file_path: str):
-    try:
-        chat = chat_sessions_collection.find_one({"file_path": file_path})
-        if chat:
-            return mongo_to_dict(chat)
-        else:
-            response = await create_chat(file_path)
-            return response
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+####################fatma ######################3
+material=None
 
 @router.post("/newchat", tags=["chats"])
 async def create_chat(material_path: str):
+    global material
+    material=material_path
     try:
-        new_chat = {
-            "material_path": material_path,
-            "chat_history": [],
-            "created_at": datetime.now(),
-            "last_active_at": datetime.now()
-        }
-        result = chat_sessions_collection.insert_one(new_chat)
+        return {"message": f"Model instance for '{material_path}' is successfully prepared."}
 
-        # Initialize the RAG model and store it in the dictionary
-        rag_model = RagChain(source_name=material_path)
-        rag_model.perform_embedding()
-        rag_instances[ObjectId] = rag_model
-
-        return {"status": "success", "chat_id": ObjectId}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating chat session: {e}")
+        # Catch and return any errors
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-@router.post("/SendMessage", tags=["chats"])
-async def send_message(message: IncomingChatMessage):
-    """
-    Handles user messages, queries the RAG model, and updates chat history.
-    """
+@router.post("/ask_rag_model", tags=["chats"])
+async def ask_question(question: str):
+    global material
+    print("material", material)
+    rag_model = RagChain(source_name=material)
+    if rag_model is None:
+        raise HTTPException(status_code=400, detail="RAG model is not initialized. Please initialize the model first.")  
     try:
-        # Fetch the chat session
-        chat = chat_sessions_collection.find_one({"_id": ObjectId(message.chat_session_id)})
-        if not chat:
-            raise HTTPException(status_code=404, detail="Chat session not found")
-
-        # Append user's message to the chat history
-        user_message = ChatMessage(sender="user", message=message.message_content, timestamp=datetime.now())
-        chat["chat_history"].append(user_message.dict())
-
-        # Generate the RAG model's response
-        answer = get_rag_response(
-            session_id=message.chat_session_id,
-            material_path=chat["material_path"],
-            message=message.message_content,
-            chat_history=chat["chat_history"]
-        )
-
-        # Append the model's response to the chat history
-        system_message = ChatMessage(sender="system", message=answer, timestamp=datetime.now())
-        chat["chat_history"].append(system_message.dict())
-
-        # Update the chat history in the database
-        chat_sessions_collection.update_one(
-            {"_id": ObjectId(message.chat_session_id)},
-            {
-                "$set": {
-                    "chat_history": chat["chat_history"],
-                    "last_active_at": datetime.now()
-                }
-            }
-        )
-
-        return {"status": "success", "response": answer, "chat_history": chat["chat_history"]}
-
-        """""
-        # Create a new ChatMessage instance
-        new_message = ChatMessage(sender=True, message=answer)
-        updated_chat_history = chat.get("chat_history", [])
-        updated_chat_history.append(new_message.dict())
-        # Update the chat session in the database
-        chat_sessions_collection.update_one(
-            {"_id": ObjectId(message.chat_session_id)},
-            {"$set": {"chat_history": updated_chat_history}}
-        )
-        return {"status code": 200, "message": "Message added successfully"}
-        """""
+        print(rag_model.source_name)  # Corrected 'souce_name' to 'source_name'
+        model_answer = rag_model.ask_question(question)  # Ask the question and get the response
+        return {"answer": model_answer}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error in send_message: {e}")
+        # Catch and return any errors
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+
+###############################################3
+
+# @app.get("/chat/{file_path}", tags=["chats"])
+# async def read_chat(file_path: str):
+#     try:
+#         chat = chat_sessions_collection.find_one({"file_path": file_path})
+#         if chat:
+#             return mongo_to_dict(chat)
+#         else:
+#             response = await create_chat(file_path)
+#             return response
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail=str(e))
+
+# @router.post("/newchat", tags=["chats"])
+# async def create_chat(material_path: str):
+#     try:
+#         new_chat = {
+#             "material_path": material_path,
+#             "chat_history": [],
+#             "created_at": datetime.now(),
+#             "last_active_at": datetime.now()
+#         }
+#         result = chat_sessions_collection.insert_one(new_chat)
+
+#         # Initialize the RAG model and store it in the dictionary
+#         rag_model = RagChain(source_name=material_path)
+#         rag_model.perform_embedding()
+#         rag_instances[ObjectId] = rag_model
+
+#         return {"status": "success", "chat_id": ObjectId}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error creating chat session: {e}")
+
+# @router.post("/SendMessage", tags=["chats"])
+# async def send_message(message: IncomingChatMessage):
+#     """
+#     Handles user messages, queries the RAG model, and updates chat history.
+#     """
+#     try:
+#         # Fetch the chat session
+#         chat = chat_sessions_collection.find_one({"_id": ObjectId(message.chat_session_id)})
+#         if not chat:
+#             raise HTTPException(status_code=404, detail="Chat session not found")
+
+#         # Append user's message to the chat history
+#         user_message = ChatMessage(sender="user", message=message.message_content, timestamp=datetime.now())
+#         chat["chat_history"].append(user_message.dict())
+
+#         # Generate the RAG model's response
+#         answer = get_rag_response(
+#             session_id=message.chat_session_id,
+#             material_path=chat["material_path"],
+#             message=message.message_content,
+#             chat_history=chat["chat_history"]
+#         )
+
+#         # Append the model's response to the chat history
+#         system_message = ChatMessage(sender="system", message=answer, timestamp=datetime.now())
+#         chat["chat_history"].append(system_message.dict())
+
+#         # Update the chat history in the database
+#         chat_sessions_collection.update_one(
+#             {"_id": ObjectId(message.chat_session_id)},
+#             {
+#                 "$set": {
+#                     "chat_history": chat["chat_history"],
+#                     "last_active_at": datetime.now()
+#                 }
+#             }
+#         )
+
+#         return {"status": "success", "response": answer, "chat_history": chat["chat_history"]}
+
+#         """""
+#         # Create a new ChatMessage instance
+#         new_message = ChatMessage(sender=True, message=answer)
+#         updated_chat_history = chat.get("chat_history", [])
+#         updated_chat_history.append(new_message.dict())
+#         # Update the chat session in the database
+#         chat_sessions_collection.update_one(
+#             {"_id": ObjectId(message.chat_session_id)},
+#             {"$set": {"chat_history": updated_chat_history}}
+#         )
+#         return {"status code": 200, "message": "Message added successfully"}
+#         """""
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"Error in send_message: {e}")
 
 
 @router.post("/resume_chat")
@@ -328,36 +352,31 @@ async def not_found_handler(request: Request, exc):
         content={"status code": 404, "message": "Hey, endpoint not found. Please check the URL."},
     )
 
-
-
-#################### file upload ####################
-
-
-
 UPLOAD_DIR = Path("../Storage")
-UPLOAD_DIR.mkdir(exist_ok=True)  # Create upload directory if not exists
+UPLOAD_DIR.mkdir(exist_ok=True)  
 
+# Create upload directory if not exists
 @app.post("/uploadfile/", tags=["files"])
 async def upload_file(file: UploadFile):
     file_location = UPLOAD_DIR / file.filename
-    #file_location = 'C:\Users\MA\Desktop\SW-Project\Genie-for-AI-study-Notes\Storage'
-    print(file_location)
     try:
         with file_location.open("wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not save file: {str(e)}")
 
     try:
         # create embedding for the pdf file in Pinecone
         pdf_processor=PDFProcessor(file_location)
-       # pdf_processor.prepare_pdf()
+        print("the use index name",pdf_processor.index_name)
+        print("path",pdf_processor.pdf_path)
+        pdf_processor.prepare_pdf()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not create embedding for the uploaded pdf {str(e)}")
 
+
     return {"info": f"File '{file.filename}' saved at '{file_location}'"}
-
-
 
 
 @app.get("/home/", tags=["files"])
@@ -368,39 +387,6 @@ async def list_files():
         return {"files": files}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading files: {str(e)}")
-
-
-material=None
-
-@router.post("/newchat", tags=["chats"])
-async def create_chat(material_path: str):
-    global material
-    material=material_path
-    try:
-        return {"message": f"Model instance for '{material_path}' is successfully prepared."}
-
-    except Exception as e:
-        # Catch and return any errors
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-
-@router.post("/ask_rag_model", tags=["chats"])
-async def ask_question(question: str):
-    global material
-    rag_model = RagChain(source_name=material)
-    if rag_model is None:
-        raise HTTPException(status_code=400, detail="RAG model is not initialized. Please initialize the model first.")  
-    try:
-        print(rag_model.souce_name)
-        model_answer = rag_model.ask_question(question) # Ask the question and get the response
-    except Exception as e:
-        # Catch and return any errors
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
-    try:
-        answer = model_answer["result"]
-        return {"answer": answer}
-
-    except Exception as e:
-        raise HTTPException(status_code=500,detail=f"the model return no result: {str(e)}")
 
 
 app.include_router(router)

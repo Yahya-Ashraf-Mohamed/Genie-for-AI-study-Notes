@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 import fitz  #
 import base64
 from langchain_groq import ChatGroq

@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8001
 
 # Command to run the FastAPI app
-CMD ["uvicorn", "app.main:app", "--reload"]
+CMD ["uvicorn", "main:app", "--reload"]

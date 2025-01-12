@@ -9,11 +9,13 @@ from fastapi import File, UploadFile
 import shutil
 from pathlib import Path
 from fastapi.responses import JSONResponse
-from AI import *
+from AI.pdf_pipeline import *
+from AI.qa_pipeline import *
 from helperFunctions import *
 
-
-
+# Access the keys from the environment
+os.environ["PINECONE_API_KEY"] = "pcsk_7a6x6_Mq2MQntZVjiiXLLpdPWXfKdgKatSLRn3FHrETqvixgyR6TEJoZBbw7CtBYAaWnk" 
+os.environ["GROQ_API_KEY"] = "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"
 
 app = FastAPI(title="Genie - AI Study Assistant")
 
@@ -135,7 +137,7 @@ async def search_study_material(title: str):
 
 ####################fatma ######################3
 material=None
-
+qa_rag_instance=None
 @router.post("/newchat", tags=["chats"])
 async def create_chat(material_path: str):
     global material
@@ -149,14 +151,13 @@ async def create_chat(material_path: str):
 
 @router.post("/ask_rag_model", tags=["chats"])
 async def ask_question(question: str):
-    global material
+    global material, qa_rag_instance
     print("material", material)
-    rag_model = RagChain(source_name=material)
-    if rag_model is None:
-        raise HTTPException(status_code=400, detail="RAG model is not initialized. Please initialize the model first.")  
+    if qa_rag_instance is None:
+        qa_rag_instance = RagChain(source_name=material)
     try:
-        print(rag_model.source_name)  # Corrected 'souce_name' to 'source_name'
-        model_answer = rag_model.ask_question(question)  # Ask the question and get the response
+        print(qa_rag_instance.source_name)  # Corrected 'souce_name' to 'source_name'
+        model_answer = qa_rag_instance.ask_question(question)  # Ask the question and get the response
         return {"answer": model_answer}
     except Exception as e:
         # Catch and return any errors
@@ -368,10 +369,9 @@ async def upload_file(file: UploadFile):
 
     try:
         # create embedding for the pdf file in Pinecone
-        pdf_processor=PDFProcessor(file_location)
-        print("the use index name",pdf_processor.index_name)
-        print("path",pdf_processor.pdf_path)
-        pdf_processor.prepare_pdf()
+        pipeline = PDFPipeline(file_location)
+        asyncio.run(pipeline.run())
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Could not create embedding for the uploaded pdf {str(e)}")
 

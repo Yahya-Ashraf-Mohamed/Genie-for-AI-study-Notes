@@ -3,7 +3,7 @@ version: "3.9"
 services:
   frontend:
     build:
-      context: ./frontend  # Path to the frontend Dockerfile
+      context: ./FrontEnd-app  # Path to the frontend Dockerfile
     ports:
       - "3000:3000"  # Map React's development server to localhost
     volumes:
@@ -14,7 +14,7 @@ services:
 
   backend:
     build:
-      context: ./backend  # Path to the backend Dockerfile
+      context: ./BackEnd-app  # Path to the backend Dockerfile
     ports:
       - "8001:8001"  # Map FastAPI's port to localhost
     volumes:

@@ -16,5 +16,4 @@ langchain_community
 langchain_pinecone
 fastembed
 nest-asyncio
-unstructured[pdf]
-python-dotenv
+pydantic[email]

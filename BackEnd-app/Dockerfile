@@ -1,20 +1,18 @@
-# Use Node.js as the base image
-FROM node:16
+# Use Python image
+FROM python:3.10
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to install dependencies
-COPY package.json package-lock.json ./
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies
-RUN npm install
-
-# Copy the rest of the application's source code
+# Copy the application code
 COPY . .
 
-# Expose port 3000 for the React development server
-EXPOSE 3000
+# Expose the backend port (8001)
+EXPOSE 8001
 
-# Command to start the React development server
-CMD ["npm", "start"]
+# Command to run the FastAPI app
+CMD ["uvicorn", "app.main:app", "--reload"]

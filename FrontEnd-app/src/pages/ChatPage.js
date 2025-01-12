@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 import Sidebar from '../components/Sidebar/Sidebar';  
-import MainContent from '../components/DashboardMainContent';
+import MainContent from '../components/ChatMainContent';
 
-const DashboardPage = () => {
+const ChatPage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
@@ -14,4 +14,4 @@ const DashboardPage = () => {
   );
 };
 
-export default DashboardPage;
+export default ChatPage;

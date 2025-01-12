@@ -11,7 +11,7 @@
   background-color: white;
   padding: 20px;
   border-right: 1px solid #ccc;
-  position: fixed; /* Fix it to the left side */
+  /* position: fixed; Fix it to the left side */
   top: 0;
   bottom: 0;
   overflow-y: auto; /* Enable scrolling for sidebar */

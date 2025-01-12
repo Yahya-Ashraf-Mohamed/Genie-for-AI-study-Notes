@@ -1,0 +1,59 @@
+/* src/styles/MainContent.css */
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f7f7f7;
+    width: 100%;
+    height: 100vh; /* Full height */
+    overflow-y: auto; /* Enable scrolling */
+  }
+  
+  .content {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+  }
+  
+
+  
+  /* for the chat page content  */
+  
+  
+  .chat-box {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background: #fff;
+  }
+  
+  .chat-history {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+  }
+  
+  .chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 100%;
+  }
+  
+  .user-message {
+    align-self: flex-end;
+    text-align: right;
+  }
+  
+  .ai-message {
+    align-self: flex-start;
+    text-align: left;
+  }
+  

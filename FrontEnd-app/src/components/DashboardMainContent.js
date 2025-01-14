@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import '../styles/DashboardMainContent.css';
 import { useNavigate } from "react-router-dom";
-
-const API_BASE_URL = " http://127.0.0.1:8000"; // Base API URL
+import apiClient from "../api/api"; // Import the centralized API client
 
 const DashboardMainContent = () => {
   // State to store the list of uploaded files
@@ -12,13 +11,13 @@ const DashboardMainContent = () => {
   const navigate = useNavigate(); // React Router's navigation hook
 
   // Fetch the list of uploaded files from the API
-  const fetchUploadedFiles = async () => {
+ const fetchUploadedFiles = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/home`);
+      const response = await apiClient.get("/home");
       console.log(response.data.files);
-      setUploadedFiles(response.data.files); // Update the state with fetched files
+      setUploadedFiles(response.data.files); // Update state with fetched files
     } catch (error) {
-      console.error('Error fetching uploaded files:', error);
+      console.error("Error fetching uploaded files:", error);
     }
   };
 
@@ -37,8 +36,7 @@ const DashboardMainContent = () => {
     formData.append("file", fileToUpload); 
   
     try {
-      // Send the file to the server
-      const response = await axios.post(`${API_BASE_URL}/uploadfile`, formData, {
+     const response = await apiClient.post("/uploadfile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -69,9 +67,9 @@ const DashboardMainContent = () => {
 
     try {
         // Send an API request with query parameters
-        const response = await fetch(`${API_BASE_URL}/newchat?material_path=${encodeURIComponent(fileName)}`, {
-            method: 'POST',
-        });
+      const response = await apiClient.post(`/newchat`, null, {
+        params: { material_path: fileName }, // Use `params` for query parameters
+      });
 
         if (!response.ok) {
             const errorData = await response.json();

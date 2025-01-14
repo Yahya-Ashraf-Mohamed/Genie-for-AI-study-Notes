@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import '../styles/ChatMainContent.css';
 import PromptInput from './PromptInput';
 import ReactMarkdown from "react-markdown"; 
+import apiClient from "../api/api"; // Import the centralized API client
 
-const API_BASE_URL = "http://127.0.0.1:8000";
 
 const ChatMainContent = () => {
   const { fileName } = useParams(); // Get the file name from the route parameter
@@ -17,25 +17,22 @@ const ChatMainContent = () => {
   };
 
   const askRagModel = async (question) => {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/ask_rag_model?question=${encodeURIComponent(question)}`,
-        { method: 'POST' }
-      );
+  try {
+    // Use apiClient to send the POST request
+    const response = await apiClient.post("/ask_rag_model", { question });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Failed to get a response from the RAG model.');
-      }
+    // Return the answer from the response
+    return response.data.answer; // Assuming the response contains an `answer` field
+  } catch (error) {
+    // Handle errors and log them
+    const errorMessage =
+      error.response?.data?.detail || "Failed to get a response from the RAG model.";
+    console.error("Error while querying the RAG model:", errorMessage);
+    throw new Error(errorMessage);
+  }
+};
 
-      const data = await response.json();
-      return data.answer;
-    } catch (error) {
-      console.error("Error while querying the RAG model:", error.message);
-      throw error;
-    }
-  };
-
+ 
   const onSubmit = async (input) => {
     if (!input.trim()) return;
     setLoading(true);

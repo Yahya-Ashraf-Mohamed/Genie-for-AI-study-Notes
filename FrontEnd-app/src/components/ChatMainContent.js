@@ -16,21 +16,22 @@ const ChatMainContent = () => {
     setInput(e.target.value);
   };
 
-  const askRagModel = async (question) => {
+const askRagModel = async (question) => {
   try {
-    // Use apiClient to send the POST request
-    const response = await apiClient.post("/ask_rag_model", { question });
+    // Use query parameters instead of the POST body
+    const response = await apiClient.post("/ask_rag_model", null, {
+      params: { question }, // Send question as a query parameter
+    });
 
-    // Return the answer from the response
-    return response.data.answer; // Assuming the response contains an `answer` field
+    return response.data.answer; // Assuming the backend returns { answer: "..." }
   } catch (error) {
-    // Handle errors and log them
     const errorMessage =
       error.response?.data?.detail || "Failed to get a response from the RAG model.";
     console.error("Error while querying the RAG model:", errorMessage);
     throw new Error(errorMessage);
   }
 };
+
 
  
   const onSubmit = async (input) => {

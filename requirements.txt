@@ -1,7 +1,7 @@
 # Backend Framework
 fastapi==0.95.2
 uvicorn==0.23.2
-
+pypdf
 # Database Libraries
 sqlalchemy==1.4.49
 psycopg2-binary==2.9.8  # PostgreSQL support

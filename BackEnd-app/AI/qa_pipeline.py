@@ -49,14 +49,9 @@ class QAPrompt:
             - Use the provided context to answer the user's question as clearly and thoroughly as possible.
             - Explain your answer in a way that enhances the user's understanding of the subject.
             - If the context does not provide enough information, honestly say, "The document probably does not provide an answer," and use your intelligence to provide a simple and accurate answer.
-            - Be concise, yet detailed enough to ensure the explanation is helpful.
-            
-            Format your response to include:
-            1. **A clear and thorough answer to the user's question.**
-            2. **Additional helpful insights or context, if applicable.**
-            
-            Be honest,concise, and avoid making up answers when neither the document nor your knowledge provides enough information.
-
+           
+        
+            Be honest,concise,summarized, and avoid making up answers when neither the document nor your knowledge provides enough information.
 
             Context: {context}
             """
